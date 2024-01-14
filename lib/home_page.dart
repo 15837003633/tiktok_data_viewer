@@ -13,15 +13,8 @@ class _TKHomePageState extends State<TKHomePage> {
 
 
   final table_fields = ['ID','类目','昵称','账号','邮箱','粉丝数','收入','观看量','社交账号','数据来源','国家','详情','query'];
-  late List<TKCateModel> cate_models = [TKCateModel('家具',300),TKCateModel('宠物用品',200)];
-  late List<TKMemberModel>? member_models = [
-    TKMemberModel(uid: '12312312',cate: '家具',nickname: 'scott'),
-    TKMemberModel(uid: '12312312',cate: '家具1',nickname: 'scott1'),
-    TKMemberModel(uid: '12312312',cate: '家具2',nickname: 'scott2'),
-    TKMemberModel(uid: '12312312',cate: '家具3',nickname: 'scott3',detail: "啊啊啊自行车自行车自行车自行车自行车自行车自行车自行车在线查自习正擦仔细"),
-    TKMemberModel(uid: '12312312',cate: '家具4',nickname: 'scott4',query_args: '啊撒大声地啊实打实大师大大啊实打实大撒大声地阿萨德'),
-    TKMemberModel(uid: '12312312',cate: '家具5',nickname: 'scott5'),
-  ];
+  late List<TKCateModel> cate_models = [];
+  late List<TKMemberModel>? member_models = null;
 
   int selectTapIndex = 0;
   int selectPageIndex = 1;
@@ -123,14 +116,22 @@ class _TKHomePageState extends State<TKHomePage> {
     TKCateModel currentCate = this.cate_models[selectTapIndex];
     return FutureBuilder(future: getMemebers(currentCate.cate, selectPageIndex, email_filte), builder: (ctx, snap_short){
 
+      print(snap_short);
       // /*
-      if (!snap_short.hasData) return Text('暂无数据');
+      if (!snap_short.hasData || snap_short.connectionState == ConnectionState.waiting) {
+        return Text('暂无数据');
+      }
 
       var tuple = snap_short.data!;
+      print(tuple);
 
       this.member_models = tuple.$1;
       final display_pagenum = tuple.$2;
       final display_total_pagenum = tuple.$3;
+
+      print(member_models);
+      print(display_pagenum);
+      print(display_total_pagenum);
        // */
       // final display_pagenum = selectPageIndex;
       // final display_total_pagenum = 5;
@@ -224,9 +225,14 @@ class _TKHomePageState extends State<TKHomePage> {
   }
 
   Future<(List<TKMemberModel>, int, int)> getMemebers(String cate, int page_num, bool show_email) async{
+    print('request $cate,$page_num,$show_email');
     var url_path = show_email ? '/get_members_by_cate_with_email':'/get_members_by_cate';
-    dynamic resp = await HttpRequest.request(url_path,params: {'page':page_num,'page':page_num});
+    dynamic resp = await HttpRequest.request(url_path,params: {'cate':cate,'page':page_num});
+
     List list = resp['data'];
-    return (list.map((e) => TKMemberModel.fromJson(e)).toList(),int.parse(resp['page']),int.parse(resp['totalPage']));
+    int page =resp['page'];
+    int page_count = resp['totalPage'];
+    final tuple = (list.map((e) => TKMemberModel.fromJson(e)).toList(),page,page_count);
+    return tuple;
   }
 }
