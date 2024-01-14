@@ -21,10 +21,21 @@ class _HomeContentState extends State<HomeContent> {
   late List<TKMemberModel>? member_models = null;
 
   int selectPageIndex = 1;
+  late String cate;
+  late bool email_filte;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    selectPageIndex = widget.selectPageIndex;
+    cate = widget.cate;
+    email_filte = widget.email_filte;
+  }
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder(future: getMemebers(widget.cate, widget.selectPageIndex, widget.email_filte), builder: (ctx, snap_short){
+    return FutureBuilder(future: getMemebers(cate, selectPageIndex, email_filte), builder: (ctx, snap_short){
 
       print(snap_short);
       // /*
@@ -47,7 +58,7 @@ class _HomeContentState extends State<HomeContent> {
       // final display_total_pagenum = 5;
 
       return SingleChildScrollView(
-        // scrollDirection: Axis.horizontal,
+        scrollDirection: Axis.horizontal,
         child: Column(
           children: [
             Container(
