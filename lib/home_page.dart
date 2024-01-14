@@ -114,12 +114,12 @@ class _TKHomePageState extends State<TKHomePage> {
   }
 
 
-    Widget buildBodyView(){
+  Widget buildBodyView(){
     if (selectTapIndex >= this.cate_models.length){
       return Text("暂无数据");
     }
     TKCateModel currentCate = this.cate_models[selectTapIndex];
-    return HomeContent(currentCate.cate,1,email_filte);
+    return HomeContent(key:ValueKey('${currentCate.cate}+${email_filte}'),currentCate.cate,1,email_filte);
   }
 
 

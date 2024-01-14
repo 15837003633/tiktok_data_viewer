@@ -8,7 +8,7 @@ class HomeContent extends StatefulWidget {
   int selectPageIndex;
   bool email_filte;
 
-  HomeContent(this.cate, this.selectPageIndex, this.email_filte);
+  HomeContent(this.cate, this.selectPageIndex, this.email_filte,{Key? key}):super(key:key);
 
   @override
   State<HomeContent> createState() => _HomeContentState();
@@ -59,56 +59,60 @@ class _HomeContentState extends State<HomeContent> {
 
       return SingleChildScrollView(
         scrollDirection: Axis.horizontal,
-        child: Column(
+        child: Row(
           children: [
-            Container(
-              padding: EdgeInsets.symmetric(vertical: 20),
-              child: DataTable(
-                dataRowMaxHeight:50,
-                border: TableBorder.all(
-                    width: 0.5,color: Colors.grey),
-                columns: table_fields.map((e){
-                  return DataColumn(label: Text(e));
-                }).toList(),
-                rows: this.member_models!
-                    .map(
-                      (item) => DataRow(
-                    cells: [
-                      DataCell(Text(item.uid.toString())),
-                      DataCell(Text(item.cate.toString())),
-                      DataCell(Text(item.nickname.toString())),
-                      DataCell(Text(item.handle.toString())),
-                      DataCell(Text(item.email.toString())),
-                      DataCell(Text(item.followers.toString())),
-                      DataCell(Text(item.revenue.toString())),
-                      DataCell(Text(item.views.toString())),
-                      DataCell(Text(item.social.toString())),
-                      DataCell(Text(item.platform.toString())),
-                      DataCell(Text(item.country.toString())),
-                      DataCell(OutlinedButton(onPressed: (){
-                        showDialog(context:ctx, builder: (ctx1){
-                          return Container(
-                              alignment: Alignment.center,
-                              child: Container(
-                                // width: 100,
-                                // height: 30,
-                                  constraints: BoxConstraints.loose(Size(800, 300)),
+            Column(
+              children: [
+                Container(
+                  padding: EdgeInsets.symmetric(vertical: 20),
+                  child: DataTable(
+                    dataRowMaxHeight:50,
+                    border: TableBorder.all(
+                        width: 0.5,color: Colors.grey),
+                    columns: table_fields.map((e){
+                      return DataColumn(label: Text(e));
+                    }).toList(),
+                    rows: this.member_models!
+                        .map(
+                          (item) => DataRow(
+                        cells: [
+                          DataCell(Text(item.uid.toString())),
+                          DataCell(Text(item.cate.toString())),
+                          DataCell(Text(item.nickname.toString())),
+                          DataCell(Text(item.handle.toString())),
+                          DataCell(Text(item.email.toString())),
+                          DataCell(Text(item.followers.toString())),
+                          DataCell(Text(item.revenue.toString())),
+                          DataCell(Text(item.views.toString())),
+                          DataCell(Text(item.social.toString())),
+                          DataCell(Text(item.platform.toString())),
+                          DataCell(Text(item.country.toString())),
+                          DataCell(OutlinedButton(onPressed: (){
+                            showDialog(context:ctx, builder: (ctx1){
+                              return Container(
                                   alignment: Alignment.center,
-                                  decoration: BoxDecoration(
-                                      color: Colors.white
-                                  ),
-                                  child: Text(item.detail ?? '没有数据')));
-                        });
-                      },child: Text('查看'),)),
-                      DataCell(Text(item.query_args.toString())),
-                    ],
+                                  child: Container(
+                                    // width: 100,
+                                    // height: 30,
+                                      constraints: BoxConstraints.loose(Size(800, 300)),
+                                      alignment: Alignment.center,
+                                      decoration: BoxDecoration(
+                                          color: Colors.white
+                                      ),
+                                      child: Text(item.detail ?? '没有数据')));
+                            });
+                          },child: Text('查看'),)),
+                          DataCell(Text(item.query_args.toString())),
+                        ],
+                      ),
+                    ).toList(),
                   ),
-                ).toList(),
-              ),
+                ),
+                buildPageBarView(display_pagenum,display_total_pagenum),
+
+
+              ],
             ),
-            buildPageBarView(display_pagenum,display_total_pagenum),
-
-
           ],
         ),
       );
