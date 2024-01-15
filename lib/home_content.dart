@@ -18,7 +18,7 @@ class HomeContent extends StatefulWidget {
 
 class _HomeContentState extends State<HomeContent> {
 
-  final table_fields = ['ID','类目','昵称','账号','邮箱','粉丝数','收入','观看量','社交账号','数据来源','国家','详情','query'];
+  final table_fields = ['ID','类目','昵称','账号','邮箱','粉丝数','收入','观看量','社交账号','详情','国家',];
 
   late List<TKMemberModel>? member_models = null;
 
@@ -69,8 +69,8 @@ class _HomeContentState extends State<HomeContent> {
                         .map(
                           (item) => DataRow(
                         cells: [
-                          DataCell(Text(item.uid.toString())),
-                          DataCell(Text(item.cate.toString())),
+                          DataCell(SelectableText (item.uid.toString())),
+                          DataCell(SelectableText (item.cate.toString())),
                           DataCell(
                               Row(
                                 children: [
@@ -79,21 +79,19 @@ class _HomeContentState extends State<HomeContent> {
                                     foregroundImage: NetworkImage("https://d3uucz7wx6jq40.cloudfront.net/tiktok.creator/${item.uid}/avatar_thumb.png"),
                                   ),
                                   SizedBox(width: 5,),
-                                  Text(item.nickname.toString()),
+                                  SelectableText (item.nickname.toString()),
                                 ],
                               )
                           ),
-                          DataCell(Text(item.handle.toString())),
-                          DataCell(Text(item.email.toString())),
-                          DataCell(Text(item.followers.toString())),
-                          DataCell(Text(item.revenue.toString())),
-                          DataCell(Text(item.views.toString())),
+                          DataCell(SelectableText (item.handle.toString())),
+                          DataCell(SelectableText (item.email.toString())),
+                          DataCell(SelectableText (item.followers.toString())),
+                          DataCell(SelectableText (item.revenue.toString())),
+                          DataCell(SelectableText (item.views.toString())),
                           DataCell(buildSocialView(item.social.toString())),
-                          DataCell(Text(item.platform.toString())),
-                          DataCell(Text(item.country.toString())),
                           DataCell(OutlinedButton(onPressed: (){
                             showDialog(context:ctx, builder: (ctx1){
-                              Map map = jsonDecode(item.detail ?? '没有数据');
+                              Map map = jsonDecode(item.detail ?? '');
                               return Container(
                                   alignment: Alignment.center,
                                   child: Container(
@@ -104,10 +102,10 @@ class _HomeContentState extends State<HomeContent> {
                                       decoration: BoxDecoration(
                                           color: Colors.white
                                       ),
-                                      child: Text('$map')));
+                                      child: Text('${map} \n\n${item.platform.toString()} \n\n${item.query_args.toString()}')));
                             });
                           },child: Text('查看'),)),
-                          DataCell(Text(item.query_args.toString())),
+                          DataCell(SelectableText(item.country.toString())),
                         ],
                       ),
                     ).toList(),
@@ -159,7 +157,10 @@ class _HomeContentState extends State<HomeContent> {
     if (key == "twitter"){
       file_name = "resource/images/twitter.png";
     }
-    return Image.asset(file_name,width: 25,fit: BoxFit.contain,);
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 5),
+      child: Image.asset(file_name,width: 25,fit: BoxFit.contain,),
+    );
   }
 
   Widget buildPageBarView(int displayPageIndex,int displayPageIndex_total) {
