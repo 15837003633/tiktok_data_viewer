@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-
 import 'core/models/member_model.dart';
 import 'core/services/http_request.dart';
 import 'dart:convert';
 import 'package:flutter/services.dart';
+import 'dart:html' as html;
 
 class HomeContent extends StatefulWidget {
   String cate;
@@ -18,7 +18,7 @@ class HomeContent extends StatefulWidget {
 
 class _HomeContentState extends State<HomeContent> {
 
-  final table_fields = ['ID','类目','昵称','账号','邮箱','粉丝数','收入','观看量','社交账号','详情','国家',];
+  final table_fields = ['ID','类目','昵称','账号','粉丝数','收入','观看量','社交账号','详情','国家',];
 
   late List<TKMemberModel>? member_models = null;
 
@@ -72,37 +72,40 @@ class _HomeContentState extends State<HomeContent> {
                           DataCell(SelectableText (item.uid.toString())),
                           DataCell(SelectableText (item.cate.toString())),
                           DataCell(
-                              Row(
-                                children: [
-                                  CircleAvatar(
-                                    radius: 20,
-                                    foregroundImage: NetworkImage("https://d3uucz7wx6jq40.cloudfront.net/tiktok.creator/${item.uid}/avatar_thumb.png"),
-                                  ),
-                                  SizedBox(width: 5,),
-                                  SelectableText (item.nickname.toString()),
-                                ],
+                              GestureDetector(
+                                onTap: (){
+                                  gotoPersenalPage(item);
+                                },
+                                child: Row(
+                                  children: [
+                                    CircleAvatar(
+                                      radius: 20,
+                                      foregroundImage: NetworkImage("https://d3uucz7wx6jq40.cloudfront.net/tiktok.creator/${item.uid}/avatar_thumb.png"),
+                                    ),
+                                    SizedBox(width: 5,),
+                                    Text (item.nickname.toString(),style: TextStyle(color: Colors.blue),),
+                                  ],
+                                ),
                               )
                           ),
-                          DataCell(SelectableText (item.handle.toString())),
-                          DataCell(SelectableText (item.email.toString())),
+                          DataCell(
+                              SelectableText (item.handle.toString())),
                           DataCell(SelectableText (item.followers.toString())),
                           DataCell(SelectableText (item.revenue.toString())),
                           DataCell(SelectableText (item.views.toString())),
-                          DataCell(buildSocialView(item.social.toString())),
+                          DataCell(buildSocialView('email:${item.email.toString()},${item.social.toString()}')),
                           DataCell(OutlinedButton(onPressed: (){
                             showDialog(context:ctx, builder: (ctx1){
                               Map map = jsonDecode(item.detail ?? '');
-                              return Container(
-                                  alignment: Alignment.center,
-                                  child: Container(
-                                    // width: 100,
-                                    // height: 30,
-                                      constraints: BoxConstraints.loose(Size(800, 300)),
-                                      alignment: Alignment.center,
-                                      decoration: BoxDecoration(
-                                          color: Colors.white
-                                      ),
-                                      child: Text('${map} \n\n${item.platform.toString()} \n\n${item.query_args.toString()}')));
+                              return Center(
+                                child: Container(
+                                  width: 800,
+                                  padding: EdgeInsets.all(20),
+                                    decoration: BoxDecoration(
+                                      color: Colors.white
+                                    ),
+                                    child: SelectableText('${map} \n\n${item.platform.toString()} \n\n${item.query_args.toString()}')),
+                              );
                             });
                           },child: Text('查看'),)),
                           DataCell(SelectableText(item.country.toString())),
@@ -126,11 +129,6 @@ class _HomeContentState extends State<HomeContent> {
 
   Widget buildSocialView(String input){
     Map map = getSocial(input);
-    // String? ins = map["ins"];
-    // String? ytb = map["ytb"];
-    // String? twitter = map["twitter"];
-
-
     return Row(
       children: map.keys.where((element) => map[element] != null).map((key){
         String platform = map[key];
@@ -148,6 +146,9 @@ class _HomeContentState extends State<HomeContent> {
 
   Widget buildSocialButton(String key){
     String file_name = '';
+    if (key == "email"){
+      file_name = "resource/images/gmail.png";
+    }
     if (key == "ins"){
       file_name = "resource/images/instagram.png";
     }
@@ -159,7 +160,7 @@ class _HomeContentState extends State<HomeContent> {
     }
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 5),
-      child: Image.asset(file_name,width: 25,fit: BoxFit.contain,),
+      child: Image.asset(file_name,width: 35,fit: BoxFit.contain,),
     );
   }
 
@@ -187,6 +188,11 @@ class _HomeContentState extends State<HomeContent> {
   }
 
 
+  gotoPersenalPage(TKMemberModel item){
+    final url = 'https://www.tiktok.com/@${item.handle.toString()}';
+    html.window.open(url, 'new_tab');
+  }
+
   Future<(List<TKMemberModel>, int, int)> getMemebers(String cate, int page_num, bool show_email) async{
     print('request $cate,$page_num,$show_email');
     var url_path = show_email ? '/get_members_by_cate_with_email':'/get_members_by_cate';
@@ -200,7 +206,7 @@ class _HomeContentState extends State<HomeContent> {
   }
 
   Map<String,String?> getSocial(String input){
-    RegExp regExp = RegExp(r'(\w+):(\w+)'); // 匹配字段名称和内容的正则表达式
+    RegExp regExp = RegExp(r'(\w+):([^,]+)'); // 匹配字段名称和内容的正则表达式
     Iterable<Match> matches = regExp.allMatches(input);
 
     Map<String, String?> resultMap = {};
@@ -213,5 +219,6 @@ class _HomeContentState extends State<HomeContent> {
 
     return resultMap;
   }
+
 
 }

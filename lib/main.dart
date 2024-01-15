@@ -15,7 +15,7 @@ class MyApp extends StatelessWidget {
         // textTheme: TextTheme(
         //     displayMedium:TextStyle(color: Colors.black)
         // ),
-        fontFamily: 'NotoSansSC',
+        // fontFamily: 'NotoSansSC',
       ),
       home: Scaffold(
         body: TKHomePage(),

@@ -67,6 +67,7 @@ flutter:
      - resource/images/instagram.png
      - resource/images/youtube.png
      - resource/images/twitter.png
+     - resource/images/gmail.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
