@@ -39,7 +39,10 @@ class _HomeContentState extends State<HomeContent> {
   Widget build(BuildContext context) {
     return FutureBuilder(future: getMemebers(cate, selectPageIndex, email_filte), builder: (ctx, snap_short){
 
-      if (!snap_short.hasData || snap_short.connectionState == ConnectionState.waiting) {
+      if (snap_short.connectionState == ConnectionState.waiting){
+        return Text('拼命加载中...');
+      }
+      if (!snap_short.hasData) {
         return Text('暂无数据');
       }
 
