@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'core/models/member_model.dart';
 import 'core/services/http_request.dart';
+import 'dart:convert';
 
 class HomeContent extends StatefulWidget {
   String cate;
@@ -57,15 +58,15 @@ class _HomeContentState extends State<HomeContent> {
       // final display_pagenum = selectPageIndex;
       // final display_total_pagenum = 5;
 
-      return SingleChildScrollView(
-        scrollDirection: Axis.horizontal,
-        child: Row(
-          children: [
-            Column(
-              children: [
-                Container(
-                  padding: EdgeInsets.symmetric(vertical: 20),
-                  child: DataTable(
+      return Column(
+        children: [
+          Container(
+            padding: EdgeInsets.symmetric(vertical: 20),
+            child: SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: Row(
+                children: [
+                  DataTable(
                     dataRowMaxHeight:50,
                     border: TableBorder.all(
                         width: 0.5,color: Colors.grey),
@@ -89,6 +90,7 @@ class _HomeContentState extends State<HomeContent> {
                           DataCell(Text(item.country.toString())),
                           DataCell(OutlinedButton(onPressed: (){
                             showDialog(context:ctx, builder: (ctx1){
+                              Map map = jsonDecode(item.detail ?? '没有数据');
                               return Container(
                                   alignment: Alignment.center,
                                   child: Container(
@@ -99,7 +101,7 @@ class _HomeContentState extends State<HomeContent> {
                                       decoration: BoxDecoration(
                                           color: Colors.white
                                       ),
-                                      child: Text(item.detail ?? '没有数据')));
+                                      child: Text('$map')));
                             });
                           },child: Text('查看'),)),
                           DataCell(Text(item.query_args.toString())),
@@ -107,14 +109,14 @@ class _HomeContentState extends State<HomeContent> {
                       ),
                     ).toList(),
                   ),
-                ),
-                buildPageBarView(display_pagenum,display_total_pagenum),
-
-
-              ],
+                ],
+              ),
             ),
-          ],
-        ),
+          ),
+          buildPageBarView(display_pagenum,display_total_pagenum),
+
+
+        ],
       );
     });
 
@@ -126,13 +128,13 @@ class _HomeContentState extends State<HomeContent> {
       height: 40,
       child: ListView.builder(
           shrinkWrap:true,
-          padding: EdgeInsets.symmetric(horizontal: 20),
+          padding: EdgeInsets.symmetric(horizontal: 10),
           scrollDirection: Axis.horizontal,
           itemCount: displayPageIndex_total,
           itemBuilder: (ctx,index){
             Color display_color = (index+1) == displayPageIndex ? Colors.red: Colors.blue;
             return Container(
-                padding:EdgeInsets.all(5),
+                padding:EdgeInsets.all(1.5),
                 child: OutlinedButton(onPressed: (){
                   setState(() {
                     selectPageIndex = index+1;

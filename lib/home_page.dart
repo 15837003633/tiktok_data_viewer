@@ -80,7 +80,7 @@ class _TKHomePageState extends State<TKHomePage> {
                     int index =  cate_models.indexOf(e);
                     cate_click(index);
                   },
-                  child: Text(e.cate,style: TextStyle(color: display_color),),
+                  child: Text("${e.cate}(${e.count})",style: TextStyle(color: display_color),),
                   style:ButtonStyle(
                       side: MaterialStateProperty.all(BorderSide(color:display_color))
                   )
